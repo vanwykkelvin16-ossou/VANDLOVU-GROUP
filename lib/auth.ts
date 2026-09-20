@@ -1,0 +1,10 @@
+import {db,runtime} from './server';
+const enc=new TextEncoder();
+const hex=(a:ArrayBuffer)=>Array.from(new Uint8Array(a)).map(x=>x.toString(16).padStart(2,'0')).join('');
+function unhex(s:string){return new Uint8Array(s.match(/../g)!.map(x=>parseInt(x,16)));}
+export function authReady(){const e=runtime();return !!(e.ADMIN_EMAIL&&e.ADMIN_PASSWORD_HASH&&e.SESSION_SECRET?.length>=32);}
+export async function checkPassword(password:string){const [scheme,rounds,salt,hash]=(runtime().ADMIN_PASSWORD_HASH||'').split(/[$:]/);if(scheme!=='pbkdf2'||rounds!=='100000'||!salt||!hash)return false;const key=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);const result=hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:unhex(salt),iterations:100000},key,256));let diff=result.length^hash.length;for(let i=0;i<result.length;i++)diff|=result.charCodeAt(i)^(hash.charCodeAt(i)||0);return diff===0;}
+async function hmac(){return crypto.subtle.importKey('raw',enc.encode(runtime().SESSION_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);}
+export async function newSession(){const expiry=Date.now()+12*3600*1000;const text=expiry+'.'+crypto.randomUUID();const sig=hex(await crypto.subtle.sign('HMAC',await hmac(),enc.encode(text)));return text+'.'+sig;}
+export async function isAdmin(req:Request){if(!authReady())return false;const token=req.headers.get('cookie')?.split(';').map(x=>x.trim()).find(x=>x.startsWith('vandlovu_admin='))?.slice(15);if(!token)return false;const [expiry,nonce,sig]=token.split('.');if(!/^\d+$/.test(expiry)||Number(expiry)<Date.now()||Number(expiry)>Date.now()+12*3600*1000||!/^[a-f0-9-]{36}$/.test(nonce)||!/^[a-f0-9]{64}$/.test(sig))return false;return crypto.subtle.verify('HMAC',await hmac(),unhex(sig),enc.encode(expiry+'.'+nonce));}
+export function sessionCookie(req:Request,value:string,clear=false){return `vandlovu_admin=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${clear?0:43200}${(process.env.VERCEL||new URL(req.url).protocol==='https:')?'; Secure':''}`;}

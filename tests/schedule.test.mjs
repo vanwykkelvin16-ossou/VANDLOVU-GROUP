@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {scheduled,saToday,sessionFuture,TESTS,validDate} from '../lib/booking.ts';
+assert.equal(saToday(new Date('2026-09-20T22:30:00Z')),'2026-09-21');
+assert.equal(validDate('2026-02-30'),false);
+assert.equal(scheduled('2026-09-21','unconfigured',''),false);
+for(const [d,expected] of [['2026-09-21',true],['2026-09-23',true],['2026-09-25',true],['2026-09-28',false],['2026-09-29',true],['2026-10-01',true],['2026-09-26',false],['2026-09-27',false]])assert.equal(scheduled(d,'alternating','2026-09-21'),expected,d);
+assert.equal(scheduled('2026-09-28','mwf',''),true);assert.equal(scheduled('2026-09-29','mwf',''),false);
+assert.equal(sessionFuture('2026-09-21',TESTS[0],Date.parse('2026-09-21T04:59:59Z')),true);
+assert.equal(sessionFuture('2026-09-21',TESTS[0],Date.parse('2026-09-21T05:00:00Z')),false);
+assert.equal(sessionFuture('2026-09-21',TESTS[3],Date.parse('2026-09-21T16:29:59Z')),true);
+console.log('PASS: alternate weekdays across weeks, weekends, invalid dates, SAST midnight and session cutoffs.');
