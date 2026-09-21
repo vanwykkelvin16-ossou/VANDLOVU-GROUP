@@ -1,0 +1,47 @@
+.admin-studio{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:1320px;padding:48px 44px 80px;letter-spacing:-.015em}
+.admin-studio .admin-heading{margin-bottom:32px;align-items:center}
+.admin-studio .eyebrow{font-size:10px;letter-spacing:2px;color:#8b8b93;font-weight:650}
+.admin-studio .admin-heading h1{font-size:clamp(30px,4vw,42px);font-weight:650;letter-spacing:-1.8px;line-height:1.15;margin:10px 0 12px}
+.admin-studio .admin-heading h1 span{color:#df2234}
+.admin-studio .admin-heading p{font-size:14px;color:#6e6e78}
+.admin-studio button{transition:background .18s,box-shadow .18s,transform .18s}
+.admin-studio .admin-heading>button{border-radius:50px;background:white;border-color:#e7e7eb;padding:12px 18px;height:44px;color:#555560}
+.admin-studio .stats-grid{gap:16px;margin-bottom:32px}
+.admin-studio .stat{border:1px solid #e9e9ed;border-radius:22px;padding:23px 24px;background:#fff;box-shadow:0 4px 18px #18181b03}
+.stat-label{display:flex;justify-content:space-between;align-items:center;gap:8px}.stat-label svg{color:#9898a2}
+.admin-studio .stat-label span{font-size:12px;font-weight:550;color:#62626e}
+.admin-studio .stat strong{font-size:40px;font-weight:600;letter-spacing:-2px;line-height:1.2;margin:17px 0 6px;font-variant-numeric:tabular-nums}
+.admin-studio .stat>p{color:#878791;font-size:11px;letter-spacing:0}
+.admin-studio .stat-pending{background:#202024;border-color:#202024;color:white;box-shadow:0 8px 22px #20202415}
+.admin-studio .stat-pending .stat-label span,.admin-studio .stat-pending>p{color:#c8c8d0}.stat-pending .stat-label svg{color:#ff6b78}
+.admin-studio .admin-navigation{display:inline-flex;width:auto;height:50px;gap:4px;background:#eaeaee;border-radius:15px;padding:5px}
+.admin-navigation [data-slot=tabs-trigger]{height:40px;min-width:132px;border-radius:11px;color:#6e6e78;font-size:13px;font-weight:550;border:0;gap:8px}
+.admin-navigation [data-slot=tabs-trigger][data-state=active]{background:#fff;color:#202024;box-shadow:0 2px 5px #18181b0d}.admin-navigation svg{width:16px}
+.admin-studio .admin-panel{border:1px solid #e7e7ed;border-radius:24px;padding:28px;margin-top:22px;box-shadow:0 8px 30px #18181b03}
+.admin-studio .admin-toolbar{padding-bottom:22px;margin:0;gap:18px}
+.admin-studio .admin-panel h2{font-size:20px;letter-spacing:-.6px;font-weight:650;margin-bottom:5px}
+.panel-description{font-size:13px;color:#878791;margin-top:5px}.count-pill{display:inline-block;vertical-align:middle;margin-left:7px;border-radius:8px;padding:3px 8px;font-size:11px;background:#f0f0f3;color:#777782;letter-spacing:0}
+.admin-studio .admin-toolbar button{border-radius:10px;height:40px;box-shadow:none;border-color:#e6e6ec}
+.admin-studio .booking-row{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) auto;gap:22px;padding:24px 4px;border-color:#eeeef2}
+.request-person{display:flex;gap:14px;align-items:center;min-width:0}.request-person>div{min-width:0}
+.request-avatar{width:44px;height:44px;background:#f1f1f5;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#64646f;flex-shrink:0;letter-spacing:.5px}
+.admin-studio .booking-row h3{font-size:14px;color:#282830;font-weight:600;overflow-wrap:anywhere}.admin-studio .booking-row p{font-size:12px;color:#7b7b87;overflow-wrap:anywhere}
+.request-reference{display:block;font-size:10px;letter-spacing:.6px;color:#93939c;margin-top:6px}
+.request-test{display:flex;gap:8px;align-items:center;color:#4a4a55;font-size:12px;margin-bottom:9px}.request-vehicle{display:inline-block;padding:2px 6px;background:#f5f5f7;border-radius:5px;margin-left:5px;color:#63636e}
+.admin-studio .booking-row .actions{flex-direction:column;align-items:flex-end;gap:11px}
+.status{border-radius:50px;font-size:11px;font-weight:550;padding:5px 10px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}.status-dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}
+.admin-studio .booking-row .actions button{height:34px;border-radius:9px;font-size:12px;gap:10px;box-shadow:none;border-color:#e5e5eb;background:#fff}
+.admin-studio .booking-row .actions button:hover{background:#f7f7fa;border-color:#c9c9d2}
+.admin-studio .empty-state{padding:70px 20px 80px}.admin-studio .empty-state>svg{background:#f5f5f8;border-radius:18px;padding:13px;box-sizing:content-box;width:27px;height:27px;color:#9696a2;margin-bottom:20px}.admin-studio .empty-state h3{color:#4f4f5c;font-weight:550;font-size:16px}.admin-studio .empty-state p{color:#8c8c96;font-size:13px}
+.admin-studio .settings-grid{gap:40px}.admin-studio .settings-grid>div{padding-left:36px;border-left:1px solid #eeeef2}.admin-studio .settings-grid h3{font-size:18px;letter-spacing:-.5px;margin-bottom:10px}
+.admin-studio input,.admin-studio textarea,.admin-studio [data-slot=select-trigger]{border-radius:11px;border-color:#e0e0e7;box-shadow:none;min-height:44px;background:#fcfcfd;font-size:14px}
+.admin-studio label{font-size:12px;color:#5e5e69;font-weight:550}.admin-studio .field{gap:8px}
+.admin-studio .primary-button{border-radius:12px;box-shadow:0 4px 12px #c6152720;font-size:13px;min-height:44px}
+.admin-studio .privacy-note{color:#81818c;font-size:12px;line-height:1.7}.admin-studio .notice{border-radius:12px;font-size:13px}.admin-studio .error-message{border-radius:12px}
+.admin-studio .admin-calendar-grid{grid-template-columns:310px minmax(0,1fr);gap:34px}.admin-studio .admin-calendar-grid>.booking-calendar{background:#fafafc;border-radius:18px;padding:10px;max-width:310px;align-self:start}
+.admin-studio .admin-calendar-grid .booking-row{grid-template-columns:minmax(0,1fr) auto;gap:15px}.admin-calendar-grid .request-session{grid-column:1}.admin-studio .admin-calendar-grid .actions{grid-column:2;grid-row:1/3}
+.admin-studio .login-card{border-radius:28px;border-color:#e8e8ee;padding:40px;box-shadow:0 20px 70px #18181b08;margin:28px auto 80px;max-width:440px}.admin-studio .login-card h1{font-size:32px;letter-spacing:-1.4px}.admin-studio .login-card .success-icon{background:#fceef0;color:#d82035;border-radius:18px;width:56px;height:56px;margin-bottom:25px}.admin-studio .login-card form{gap:22px}.admin-studio .login-card .privacy-note{margin-top:24px;margin-bottom:0;font-size:11px}
+.admin-detail-dialog{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;border-radius:24px!important;padding:30px!important;border-color:#e6e6ec!important;box-shadow:0 30px 100px #0002!important;gap:18px!important}.admin-dialog-title{font-size:25px!important;letter-spacing:-.9px;font-weight:600!important}.request-dialog-status{display:flex;align-items:center;gap:10px;background:#f7f7f9;padding:12px 14px;border-radius:12px}.request-dialog-status>span:last-child{font-size:11px;color:#7a7a85}.admin-detail-dialog .detail-grid{gap:0 22px}.admin-detail-dialog .detail-grid>div{padding:12px 0;border-bottom:1px solid #eeeef2}.admin-detail-dialog .detail-grid dt{font-size:11px;color:#8a8a96}.admin-detail-dialog .detail-grid dd{font-size:14px;font-weight:500;color:#292933}.admin-detail-dialog .email-note{font-size:11px;line-height:1.7}.admin-detail-dialog textarea{border-radius:12px;min-height:90px}.admin-detail-dialog .modal-actions{padding-top:18px;border-top:1px solid #eeeef2;margin-top:0}.admin-detail-dialog .modal-actions button{border-radius:11px;min-height:44px}
+@media(max-width:900px){.admin-studio{padding:32px 22px 60px}.admin-studio .stat{padding:20px}.admin-studio .admin-calendar-grid{grid-template-columns:1fr}.admin-studio .admin-calendar-grid>.booking-calendar{margin:auto}.admin-studio .booking-row{gap:16px}.request-avatar{display:none}}
+@media(max-width:650px){.admin-studio{padding:28px 16px 50px}.admin-studio .admin-heading{align-items:flex-start;gap:16px}.admin-studio .admin-heading h1{font-size:31px}.admin-studio .admin-heading>button{height:36px;padding:8px 12px;font-size:12px}.admin-studio .stats-grid{gap:10px;margin-bottom:24px}.admin-studio .stat{border-radius:18px;padding:17px}.admin-studio .stat strong{font-size:33px;margin-top:13px}.admin-studio .stat>p{font-size:10px}.admin-studio .admin-navigation{display:flex;width:100%;height:48px}.admin-navigation [data-slot=tabs-trigger]{min-width:0;flex:1;padding:0 9px;font-size:12px;height:38px}.admin-studio .admin-panel{border-radius:19px;padding:20px 16px}.admin-studio .admin-toolbar{gap:16px}.admin-studio .admin-toolbar>div:last-child{width:100%}.admin-studio .booking-row{grid-template-columns:minmax(0,1fr) auto;padding:22px 0;gap:13px}.admin-studio .request-person{grid-column:1;grid-row:1}.admin-studio .request-session{grid-column:1;grid-row:2}.admin-studio .booking-row .actions{grid-column:2;grid-row:1/3;align-self:center}.admin-studio .settings-grid{grid-template-columns:1fr;gap:28px}.admin-studio .settings-grid>div{padding:24px 0 0;border-left:0;border-top:1px solid #eeeef2}.admin-studio .login-card{padding:28px;margin-top:12px}.admin-detail-dialog{padding:24px 20px!important}.admin-detail-dialog .detail-grid{grid-template-columns:1fr 1fr;gap:0 14px}.admin-detail-dialog .detail-grid dd{font-size:12px}.request-dialog-status{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.admin-studio button{transition:none}}
