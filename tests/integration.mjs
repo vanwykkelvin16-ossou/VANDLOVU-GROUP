@@ -10,7 +10,7 @@ try{
  assert.equal((await call('/api/admin/bookings')).status,401);assert.equal((await call('/api/admin/settings','PUT',{mode:'mwf'},true,'https://evil.example')).status,403);assert.equal((await call('/api/admin/login','POST',{email:'qa@example.test',password:'wrong'})).status,401);
  const d=new Date();d.setUTCDate(d.getUTCDate()+30);while(d.getUTCDay()!==1)d.setUTCDate(d.getUTCDate()+1);const date=d.toISOString().slice(0,10);
  const payload=n=>({requestId:randomUUID(),test:['ldv-brake','ldv-lux','hmv-brake','hmv-lux'][n%4],date,contact:'QA Integration',company:'QA Integration',email:'qa@example.test',phone:'0821234567',vehicle:'QA-'+n,website:''});
- assert.equal((await call('/api/bookings','POST',payload(0))).status,409);assert.equal((await call('/api/admin/settings','PUT',{mode:'mwf'},true)).status,200);assert.equal((await call('/api/admin/emails','POST',{},true)).status,409);
+ assert.equal((await call('/api/admin/settings','PUT',{mode:'unconfigured'},true)).status,200);assert.equal((await call('/api/bookings','POST',payload(0))).status,409);assert.equal((await call('/api/admin/settings','PUT',{mode:'mwf'},true)).status,200);assert.equal((await call('/api/admin/emails','POST',{},true)).status,409);
  const inputs=Array.from({length:10},(_,i)=>payload(i));const outcomes=await Promise.all(inputs.map(p=>call('/api/bookings','POST',p)));const codes=outcomes.map(r=>r.status);assert.equal(codes.filter(x=>x===201).length,5,JSON.stringify(outcomes.map(r=>({status:r.status,data:r.data}))));assert.equal(codes.filter(x=>x===409).length,5);assert.ok(outcomes.filter(r=>r.status===201).every(r=>r.data.emailSent===false));
  const first=outcomes.findIndex(r=>r.status===201);assert.equal((await call('/api/bookings','POST',inputs[first])).data.reference,outcomes[first].data.reference);
  let avail=(await call('/api/availability?month='+date.slice(0,7)+'&test=hmv-lux')).data;assert.equal(avail.days.find(d=>d.date===date).state,'full');assert.ok(!JSON.stringify(avail).includes('qa@example.test'));
@@ -21,5 +21,5 @@ try{
  const saved=cookie;cookie=cookie.slice(0,-1)+(cookie.endsWith('1')?'2':'1');assert.equal((await call('/api/admin/bookings','GET',undefined,true)).status,401);cookie=saved;
  assert.equal((await call('/api/admin/logout','POST',{},true)).status,200);
  const counts=await db.prepare("SELECT status,count(*) n FROM outbox GROUP BY status").all();assert.deepEqual(counts.results,[{status:'queued',n:8}]);
- console.log('PASS: production Worker + real D1; 10 concurrent submissions -> 5 accepted, 5 rejected; shared test capacity; idempotency; reject releases capacity; approve; final decision conflict; block/unblock; weekend rejection; private data; auth; cookie tampering; CSRF; Gmail queue.');
+ console.log('PASS: production Worker + real D1; 10 concurrent submissions -> 5 accepted, 5 rejected; shared test capacity; idempotency; reject releases capacity; approve; final decision conflict; block/unblock; weekend rejection; private data; auth; cookie tampering; CSRF; Resend queue.');
 }finally{await mf.dispose();}

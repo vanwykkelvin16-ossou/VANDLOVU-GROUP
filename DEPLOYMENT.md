@@ -44,10 +44,9 @@ Set these for Production (and use separate database credentials for Preview). Ne
 | `ADMIN_EMAIL` | The single administrator’s sign-in email |
 | `ADMIN_PASSWORD_HASH` | Generated PBKDF2 hash; not the plaintext password |
 | `SESSION_SECRET` | Random session-signing secret, at least 32 characters |
-| `GMAIL_CLIENT_ID` | Google OAuth client ID |
-| `GMAIL_CLIENT_SECRET` | Google OAuth client secret |
-| `GMAIL_REFRESH_TOKEN` | Offline authorisation for the sender mailbox |
-| `GMAIL_SENDER` | `vandlovugroup@gmail.com` |
+| `RESEND_API_KEY` | Secret Resend sending-only API key scoped to the verified domain |
+| `RESEND_FROM` | `bookings@vandlovubookings.co.za` |
+| `RESEND_REPLY_TO` | `info@vandlovu.co.za,vandlovugroup@gmail.com` (comma-separated reply recipients) |
 
 Generate the admin password hash and session secret locally with:
 
@@ -59,9 +58,9 @@ Paste the generated colon-separated hash exactly into Vercel’s environment var
 
 ## 4. Deploy and finish setup
 
-Deploy the project. Open `/admin`, sign in and save the intended testing schedule in **Settings**. Choose Monday/Wednesday/Friday or every second working day with the correct weekday anchor. A new database deliberately starts with no dates available until this is saved.
+Run the database migrations before deployment. Migration 0002 sets the confirmed schedule to every second working day, starting Monday 28 September 2026, skipping weekends. It preserves an existing administrator-configured schedule. In `/admin` → **Settings**, verify that the mode is alternating and the first date is `2026-09-28`. The first dates are 28 September, 30 September, 2 October, 6 October and 8 October.
 
-Set up the dedicated Gmail mailbox in Google Cloud: enable Gmail API, configure the OAuth consent screen and authorise only `https://www.googleapis.com/auth/gmail.send` with offline access. Do not share or use the mailbox password. Google OAuth Testing mode can expire refresh tokens; complete the appropriate publishing/verification process for the configured application. The three public links below do not by themselves complete Google verification or prove domain ownership.
+Verify vandlovubookings.co.za in Resend using its DNS records at Domains.co.za. Configure the three RESEND variables on the target host and redeploy. Gmail OAuth and App Passwords are no longer used. A configured key does not prove domain verification or successful delivery. Send a controlled test before enabling client notifications. The admin queue retains failed sends for retry and sends receipts before decisions. Resend idempotency keys prevent duplicate retries within its 24-hour window; a timeout followed by a retry after that window can duplicate an email. The status "sent" means accepted by Resend, not confirmed inbox delivery. No delivery webhook is configured. Replies are addressed to info@vandlovu.co.za and the existing Gmail inbox; this does not create a mailbox at the sender address.
 
 After adding or changing Vercel variables, redeploy. Submit one real test booking, approve it and confirm both receipt and decision emails arrive. Delete any synthetic test data through a controlled database operation when finished. Unconfigured or failed email is queued and is never falsely shown as sent. An administrator can retry queued messages from Settings.
 

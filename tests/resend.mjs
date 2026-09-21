@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const source=readFileSync('lib/email.ts','utf8').replace("import {db,runtime} from './server';",'const runtime=()=>({}); const db=()=>{throw Error("unused")};').replace("import {prettyDate} from './booking';",'const prettyDate=x=>x;');
+const code=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ES2022}}).outputText;
+const {emailText,emailHtml,sendResend}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const b={contact:'<script>bad</script>',reference:'VG-TEST',test_name:'HMV Lux Test',category:'Above 3.5 tonnes',vehicle:'ABC',date:'2026-10-05',time:'18:30',location:'Vandlovu night testing',status:'Approved'};
+const receipt=emailText(b,'receipt');assert.match(receipt.text,/not a confirmed booking/);assert.match(emailText(b,'decision').text,/approved and is confirmed/);assert.match(emailText({...b,status:'Rejected',reason:'Equipment unavailable'},'decision').text,/Reason: Equipment unavailable/);assert.ok(!emailHtml(receipt).includes('<script>'));assert.match(emailHtml(receipt),/&lt;script&gt;/);
+let first;
+globalThis.fetch=async(url,options)=>{assert.equal(url,'https://api.resend.com/emails');const body=JSON.parse(options.body);assert.equal(body.to[0],'client@example.test');assert.deepEqual(body.reply_to,['reply@example.test','second@example.test']);assert.equal(options.headers['Idempotency-Key'],'booking-test');if(first)assert.equal(options.body,first);first=options.body;return Response.json({id:'accepted'});};
+const env={RESEND_API_KEY:'test-only',RESEND_FROM:'bookings@example.test',RESEND_REPLY_TO:'reply@example.test, second@example.test'};
+await sendResend('test','client@example.test',receipt,env);await sendResend('test','client@example.test',receipt,env);
+globalThis.fetch=async()=>Response.json({message:'private provider data'},{status:429});await assert.rejects(()=>sendResend('test','client@example.test',receipt,env),/HTTP 429/);
+globalThis.fetch=async()=>Response.json({});await assert.rejects(()=>sendResend('test','client@example.test',receipt,env),/did not accept/);
+console.log('PASS: receipt/approval/rejection content, HTML escaping, Resend payload, stable retry key, rejection and invalid success handling. No real emails sent.');
