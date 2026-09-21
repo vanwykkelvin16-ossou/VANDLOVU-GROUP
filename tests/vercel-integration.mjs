@@ -35,5 +35,21 @@ try{
  const saved=cookie;cookie=cookie.slice(0,-1)+(cookie.endsWith('1')?'2':'1');assert.equal((await call('/api/admin/bookings','GET',undefined,true)).status,401);cookie=saved;
  assert.equal((await call('/api/admin/logout','POST',{},true)).status,200);
  const counts=await client.execute("SELECT status,count(*) n FROM outbox GROUP BY status");assert.deepEqual(counts.rows.map(r=>({status:r.status,n:r.n})),[{status:'queued',n:8}]);
+ // Deletion is authenticated, same-origin, atomic and releases capacity.
+ assert.equal((await call('/api/admin/bookings','DELETE',{id:rows[1].id})).status,403);
+ r=await call('/api/admin/login','POST',{email:'qa@example.test',password});cookie=r.headers.get('Set-Cookie').split(';')[0];
+ assert.equal((await call('/api/admin/bookings','DELETE',{id:rows[1].id},true,'https://evil.example')).status,403);
+ await client.execute({sql:"UPDATE outbox SET status='sending' WHERE booking_id=? AND kind='receipt'",args:[rows[1].id]});
+ assert.equal((await call('/api/admin/bookings','DELETE',{id:rows[1].id},true)).status,409);
+ assert.equal((await client.execute({sql:'SELECT id FROM bookings WHERE id=?',args:[rows[1].id]})).rows.length,1);
+ await client.execute({sql:"UPDATE outbox SET status='queued' WHERE booking_id=?",args:[rows[1].id]});
+ assert.equal((await call('/api/admin/bookings','DELETE',{id:rows[1].id},true)).status,200);
+ assert.equal((await client.execute({sql:'SELECT id FROM bookings WHERE id=?',args:[rows[1].id]})).rows.length,0);
+ assert.equal((await client.execute({sql:'SELECT id FROM outbox WHERE booking_id=?',args:[rows[1].id]})).rows.length,0);
+ assert.equal((await client.execute('SELECT id FROM bookings')).rows.length,5);
+ assert.equal((await call('/api/admin/bookings','DELETE',{id:rows[1].id},true)).status,404);
+ const afterDelete=(await call('/api/availability?month='+date.slice(0,7)+'&test=hmv-lux')).data;
+ assert.equal(afterDelete.days.find(d=>d.date===date).remaining,1);
+ console.log('PASS: deletion auth, CSRF, in-flight email guard, child records removal, unrelated records preserved and capacity released.');
  console.log('PASS: production Next.js + real libSQL; public pages; repeat-safe migrations; 10 concurrent submissions -> 5 accepted, 5 rejected; shared test capacity; idempotency; reject releases capacity; approve; final decision conflict; block/unblock; weekend rejection; private data; auth; cookie tampering; CSRF; Resend queue.');
 }catch(e){console.error(logs);throw e;}finally{server.kill();if(server.exitCode===null)await new Promise(r=>{server.once('exit',r);setTimeout(()=>{server.kill('SIGKILL');r();},3000).unref();});client.close();rmSync(directory,{recursive:true,force:true});}
